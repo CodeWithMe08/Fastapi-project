@@ -29,6 +29,14 @@ class Post(PostBase):
     class Config:
         orm_mode = True
 
+# reteiving votes with posts
+class PostOut(BaseModel):
+    Post: Post
+    votes: int
+
+    class Config:
+        orm_mode = True
+
 # user sehema
 class UserCreate(BaseModel):
     email: EmailStr
