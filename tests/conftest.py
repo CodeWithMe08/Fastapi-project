@@ -29,6 +29,7 @@ def session():
     finally:
         db.close()
     
+    
 @pytest.fixture()
 def client(session):
     def override_get_db():
@@ -50,6 +51,7 @@ def test_user(client):
     new_user = res.json()
     new_user['password'] = user_data['password']
     return new_user
+
 
 @pytest.fixture
 def test_user2(client):
@@ -74,6 +76,7 @@ def authorized_client(client, token):
         "Authorization": f"Bearer {token}"
     }
     return client
+
 
 @pytest.fixture
 def test_posts(test_user, session, test_user2):
@@ -101,12 +104,10 @@ def test_posts(test_user, session, test_user2):
 
     post_map = map(create_post_model, posts_data)
     posts = list(post_map)
-
     session.add_all(posts)
     # session.add_all([models.Post(title="first title", content="first content", owner_id=test_user['id']),
     #                 models.Post(title="second title", content="2nd content", owner_id=test_user['id']), 
     #                 models.Post(title="3rd title", content="3rd content", owner_id=test_user['id'])])
     session.commit()
-
     posts = session.query(models.Post).all()
     return posts
