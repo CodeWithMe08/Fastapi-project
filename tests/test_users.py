@@ -4,7 +4,7 @@ import pytest
 from app.config import settings
 
 
-def test_root(client, session):
+def test_root(client):
     res = client.get("/")
     print(res.json().get('message'))
     assert res.json().get('message') == "hello world"
@@ -22,7 +22,7 @@ def test_create_user(client):
 
 def test_login_user(test_user, client):
     res = client.post(
-        "/login", data={"username": "hellos@gmail.com", "password": "password123"})
+        "/login", data={"username": "helloworld123@gmail.com", "password": "password123"})
     login_res = schemas.Token(**res.json())
     payload = jwt.decode(login_res.access_token, settings.secret_key, algorithms=[settings.algorithm])
     id = payload.get("user_id")
@@ -43,10 +43,3 @@ def test_incorrect_login(test_user, client, email, password, status_code):
         "/login", data={"username": email, "password": password})
     assert res.status_code == status_code
     # assert res.json().get('detail') == 'Invalid Credentials'
-
-# def test_websocket():
-#     client = TestClient(app)
-#     with client.websocket_connect("/ws") as websocket:
-#         data = websocket.receive_json()
-#         assert data == {"msg": "Hello WebSocket"}
-
